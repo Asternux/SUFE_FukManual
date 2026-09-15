@@ -24,13 +24,13 @@
 
 ## 小白使用流程
 
-1. 下载 `SUFE-Course-Executor-v1.0.1-Windows-x64-portable.zip`，完整解压到一个固定文件夹。
+1. 下载 `SUFE-Course-Executor-v1.0.2-Windows-x64-portable.zip`，完整解压到一个固定文件夹。
 2. 双击 `0_打开使用说明.cmd` 阅读离线说明。
 3. 双击 `1_首次环境检查.cmd`。
 4. 双击 `2_填写课程.cmd`，粘贴当前轮次选课主页网址并填写目标课程。
 5. 双击 `3_只读检查.cmd`，在打开的浏览器中正常登录，核对课程、人数、已选状态和冲突。
 6. 需要真实执行时双击 `4_实战运行.cmd`，先核对课程清单并输入 `RUN`。
-7. 浏览器完成登录和预检查后，终端会要求输入 `ARM`；输入后才进入真实运行。
+7. 浏览器完成登录和预检查后，终端会要求输入精确的大写 `ARM`；输入后才进入真实运行。
 8. 结束后双击 `5_查看最近结果.cmd`。
 
 `3_只读检查` 不会提交。`4_实战运行` 可能产生真实选课操作。日常配置始终保存为 `submission.enabled=false`，实战入口只生成一次性启用配置，并在结束时删除。
@@ -47,7 +47,7 @@
 ## 源码环境
 
 - Node.js 20 或更高版本；
-- pnpm 11（v1.0.1 使用 pnpm 11.19.0 构建）；
+- pnpm 11（v1.0.2 使用 pnpm 11.19.0 构建）；
 - Google Chrome 或 Microsoft Edge。
 
 安装和构建：
@@ -97,7 +97,7 @@ Inspect 会打开浏览器并等待正常登录，然后检查教学班匹配、
 pnpm start -- --config config/courses.json --mode run
 ```
 
-若 `requireArmPhrase` 为 `true`，还必须在终端输入精确的 `ARM`。运行中支持：
+若 `requireArmPhrase` 为 `true`，还必须在终端输入精确的大写 `ARM`；该确认区分大小写。运行中支持：
 
 - `status`：查看每门课程状态；
 - `pause`：暂停新的观察和提交，已开始的页面事务会先完成验证；
@@ -123,7 +123,7 @@ pnpm start -- --config config/courses.json --mode run
 
 - [系统与程序结构](docs/ARCHITECTURE.md)
 - [验证范围与已知限制](docs/VALIDATION.md)
-- [v1.0.1 发布说明](docs/RELEASE.md)
+- [v1.0.2 发布说明](docs/RELEASE.md)
 - [Windows 交付层维护说明](delivery/维护者说明.md)
 
 ## 使用边界

@@ -1,5 +1,5 @@
 ﻿param(
-  [string]$Version = "1.0.1",
+  [string]$Version = "1.0.2",
   [string]$NodeDistributionZip = "",
   [string]$NodeShasumsFile = ""
 )
@@ -88,6 +88,10 @@ try {
   New-Item -ItemType Directory -Path $deployedNodeModules -Force | Out-Null
   Copy-Item -LiteralPath $playwrightSource -Destination (Join-Path $deployedNodeModules "playwright") -Recurse -Force
   Copy-Item -LiteralPath $playwrightCoreSource -Destination (Join-Path $deployedNodeModules "playwright-core") -Recurse -Force
+  # pnpm may materialize package-local command shims with absolute paths to the
+  # build checkout. They are not used by the runtime and must not enter releases.
+  $packageLocalBin = Join-Path $deployedNodeModules "playwright\node_modules\.bin"
+  if (Test-Path -LiteralPath $packageLocalBin) { Remove-ReleaseItem $packageLocalBin }
 
   New-Item -ItemType Directory -Path (Join-Path $appTarget "dist") -Force | Out-Null
   Copy-Item -LiteralPath (Join-Path $repoRoot "dist\src") -Destination (Join-Path $appTarget "dist\src") -Recurse -Force

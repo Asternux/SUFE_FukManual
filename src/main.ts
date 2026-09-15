@@ -5,7 +5,7 @@ import { launchBrowser } from "./browser/launchBrowser.js";
 import { readCourseData } from "./browser/readCourseData.js";
 import { waitForCoursePage } from "./browser/waitForCoursePage.js";
 import { loadConfig } from "./config/loadConfig.js";
-import { Logger } from "./logger/Logger.js";
+import { Logger, redactLogMessage } from "./logger/Logger.js";
 import { attachNetworkMetadataRecorder } from "./logger/NetworkMetadataRecorder.js";
 import { writeLessonCatalog } from "./logger/writeLessonCatalog.js";
 import { writeRunSummary } from "./logger/writeRunSummary.js";
@@ -17,6 +17,8 @@ import { CourseWorker } from "./state/CourseWorker.js";
 import { PageSubmissionExecutor } from "./executor/PageSubmissionExecutor.js";
 import { PageCourseVerifier } from "./verifier/PageCourseVerifier.js";
 import { RunPhase } from "./types.js";
+
+let activeLogger: Logger | undefined;
 
 function configPathFromArgs(args: string[]): string {
   const index = args.indexOf("--config");
@@ -36,6 +38,7 @@ async function main(): Promise<void> {
   const runId = String(Date.now());
   const runLogPath = resolve("logs", `run-${runId}.log`);
   const logger = new Logger(runLogPath);
+  activeLogger = logger;
   const configPath = configPathFromArgs(process.argv.slice(2));
   const mode = modeFromArgs(process.argv.slice(2));
   await logger.info("RUN", RunPhase.INIT);
@@ -159,8 +162,15 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error: unknown) => {
+main().catch(async (error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
-  process.stderr.write(`[FATAL] ${message}\n`);
+  const detail = error instanceof Error ? (error.stack ?? error.message) : String(error);
+  const safeDetail = redactLogMessage(detail);
+  try {
+    await activeLogger?.error("RUN", `FATAL: ${safeDetail}`);
+  } catch {
+    // stderr remains the final diagnostic path if the log file cannot be written.
+  }
+  process.stderr.write(`[FATAL] ${safeDetail}\n`);
   process.exitCode = 1;
 });

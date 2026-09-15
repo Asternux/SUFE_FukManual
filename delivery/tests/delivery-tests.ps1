@@ -66,6 +66,26 @@ try {
   Set-SubmissionEnabled $configPath $false
   Assert-True ((Read-JsonFile $configPath).submission.enabled -eq $false) "可以恢复安全状态"
 
+  $probeDirectory = Join-Path $deliveryRoot ".runtime"
+  if (-not (Test-Path -LiteralPath $probeDirectory)) {
+    New-Item -ItemType Directory -Path $probeDirectory -Force | Out-Null
+  }
+  $probeScript = Join-Path $probeDirectory "console-process-probe-$PID.cjs"
+  $probeNode = Get-NodeExecutable
+  [System.IO.File]::WriteAllText(
+    $probeScript,
+    'process.stdout.write("PROBE_STDOUT\n"); process.stderr.write("PROBE_STDERR\n"); process.exit(23);',
+    (New-Object System.Text.UTF8Encoding($false))
+  )
+  try {
+    $probeArgument = '"{0}"' -f $probeScript
+    $probeExit = Invoke-ConsoleProcess -FilePath $probeNode -ArgumentLine $probeArgument
+    Assert-True ($probeExit -is [int]) "子进程 stdout 不会混入退出码"
+    Assert-True ($probeExit -eq 23) "启动器准确转发子进程退出码"
+  } finally {
+    if (Test-Path -LiteralPath $probeScript) { Remove-Item -LiteralPath $probeScript -Force }
+  }
+
   & powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File (Join-Path $tools "inspect.ps1") -DryRun -NoPause
   Assert-True ($LASTEXITCODE -eq 0) "只读启动器 DryRun 通过"
 

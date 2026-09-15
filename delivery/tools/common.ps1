@@ -206,6 +206,11 @@ function Find-BrowserExecutable([string]$Channel) {
   return $null
 }
 
+function Invoke-ConsoleProcess([string]$FilePath, [string]$ArgumentLine) {
+  $process = Start-Process -FilePath $FilePath -ArgumentList $ArgumentLine -NoNewWindow -PassThru -Wait
+  return [int]$process.ExitCode
+}
+
 function Invoke-Executor([ValidateSet("inspect", "run")][string]$Mode, [string]$ConfigPath, [switch]$DryRun) {
   $deliveryRoot = Get-DeliveryRoot
   $appRoot = Get-AppRoot
@@ -224,8 +229,12 @@ function Invoke-Executor([ValidateSet("inspect", "run")][string]$Mode, [string]$
 
   Push-Location $deliveryRoot
   try {
-    & $node $mainScript "--config" $ConfigPath "--mode" $Mode
-    return $LASTEXITCODE
+    # Calling the native process directly from a function whose output is assigned
+    # makes Windows PowerShell capture stdout. Node then sees stdout.isTTY=false and
+    # the mandatory ARM confirmation fails immediately after READY. Start-Process
+    # keeps all three console handles attached while returning only the exit code.
+    $argumentLine = '"{0}" --config "{1}" --mode {2}' -f $mainScript, $ConfigPath, $Mode
+    return Invoke-ConsoleProcess -FilePath $node -ArgumentLine $argumentLine
   } finally {
     Pop-Location
   }

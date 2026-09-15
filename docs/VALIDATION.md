@@ -2,15 +2,23 @@
 
 ## 已验证能力
 
-v1.0.1 发布前通过：
+v1.0.2 发布前通过：
 
 - 30 项核心自动化测试；
-- 26 项 Windows 交付层测试；
+- 28 项 Windows 交付层测试；
 - TypeScript 严格构建；
 - 标准 ZIP 与便携 ZIP 的独立解压启动测试；
 - 便携包内 Playwright 本地依赖解析检查；
 - Node.js 官方发行 ZIP 的 SHA-256 清单核验；
 - 发布包隐私边界与禁止文件检查。
+
+Windows portable hotfix 还完成了以下回归：
+
+- 修复后的实站 Inspect 完整运行到 `FINISHED`，没有提交；
+- Run 启动器完整运行到 `READY` 并显示交互式 ARM 提示；
+- 在 ARM 门槛输入取消词后于 `ARMED` 前停止，没有产生选课请求；
+- 包内 Node.js 在启动器下保持 stdin、stdout、stderr 三路 TTY；
+- 在包含空格的独立目录完成环境检查、Inspect DryRun 和 Run DryRun。
 
 实站验收使用匿名化样本确认了以下行为：
 

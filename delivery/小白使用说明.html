@@ -47,7 +47,7 @@
     <li>双击 <strong>3_只读检查.cmd</strong>，在打开的浏览器中正常登录学校系统。</li>
     <li>确认课程、lessonId、人数、已选状态和冲突都符合预期。</li>
     <li>需要真实执行时，双击 <strong>4_实战运行.cmd</strong>，核对课程清单后输入 <kbd>RUN</kbd>。</li>
-    <li>浏览器登录和预检查完成后，终端会要求输入 <kbd>ARM</kbd>。输入后才进入真实运行。</li>
+    <li>浏览器登录和预检查完成后，终端会要求输入精确的大写 <kbd>ARM</kbd>。该确认区分大小写，输入后才进入真实运行。</li>
     <li>运行结束后双击 <strong>5_查看最近结果.cmd</strong>。</li>
   </ol>
 
@@ -68,7 +68,7 @@
 
   <h2>只读检查与实战运行</h2>
   <div class="card safe"><span class="tag">只读</span> <strong>3_只读检查</strong>：读取课程列表、人数、已选状态、页面开放状态和可识别冲突。检查后浏览器自动关闭属于正常现象。</div>
-  <div class="card danger"><span class="tag">实战</span> <strong>4_实战运行</strong>：可能点击学校页面中的正常“选课”操作。启动前会显示全部目标，要求输入 RUN；到达 READY 后还需输入 ARM。</div>
+  <div class="card danger"><span class="tag">实战</span> <strong>4_实战运行</strong>：可能点击学校页面中的正常“选课”操作。启动前会显示全部目标，要求输入 RUN；到达 READY 后还需输入精确的大写 ARM。</div>
   <p>如果选课尚未开放，输入 ARM 后课程通常保持 <code>PENDING</code>。程序等待页面真实开放和操作入口出现，不会因为本地时间到了就盲目提交。浏览器、终端、网络和电脑需要保持运行，电脑不能进入睡眠。</p>
 
   <h2>运行中的命令</h2>
@@ -126,7 +126,7 @@
   </ul>
   <div class="card warning">不要把整个使用过的程序文件夹直接发给别人。重新分发时使用原始空白交付压缩包。</div>
 
-  <footer>交付层版本 1.0.1 · 核心执行基线 v1.0.0 · 支持 Windows 10/11 与 Chrome/Edge</footer>
+  <footer>交付层版本 1.0.2 · 核心执行基线 v1.0.0 · 支持 Windows 10/11 与 Chrome/Edge</footer>
 </main>
 </body>
 </html>
