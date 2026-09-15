@@ -1,0 +1,30 @@
+{
+  "entryUrl": "https://eams.sufe.edu.cn/eams/stdElectCourse!defaultPage.action?electionProfile.id=REPLACE_ME",
+  "browser": {
+    "channel": "chrome",
+    "headless": false,
+    "loginTimeoutMs": 600000
+  },
+  "submission": {
+    "enabled": false,
+    "requireArmPhrase": true,
+    "minGlobalIntervalMs": 1500
+  },
+  "retry": {
+    "maxAttempts": 1,
+    "minDelayMs": 15000,
+    "unknownVerificationDelayMs": 3000,
+    "maxUnknownVerifications": 3
+  },
+  "scheduler": {
+    "tickIntervalMs": 1000,
+    "maxRunDurationMs": 21600000
+  },
+  "courses": [
+    {
+      "name": "示例课程",
+      "lessonId": "REPLACE_ME",
+      "priority": 1
+    }
+  ]
+}

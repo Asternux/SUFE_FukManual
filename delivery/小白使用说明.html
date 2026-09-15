@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>上财选课执行器 V1 使用说明</title>
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#5d6678; --line:#dfe5ef; --blue:#165dff; --soft:#f4f7fb; --warn:#9a5a00; --danger:#b42318; --ok:#087a47; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#eef2f8; font:16px/1.7 "Microsoft YaHei",system-ui,sans-serif; }
+    main { width:min(940px,calc(100% - 32px)); margin:28px auto; background:#fff; border:1px solid var(--line); border-radius:18px; padding:38px 46px 50px; box-shadow:0 14px 38px rgba(22,42,80,.08); }
+    h1 { margin:0 0 8px; font-size:30px; }
+    h2 { margin:34px 0 12px; padding-top:8px; border-top:1px solid var(--line); font-size:22px; }
+    h3 { margin:24px 0 8px; font-size:18px; }
+    p { margin:8px 0; }
+    .lead { color:var(--muted); font-size:17px; }
+    .card { margin:15px 0; padding:16px 18px; background:var(--soft); border-radius:12px; }
+    .safe { border-left:5px solid var(--ok); }
+    .warning { border-left:5px solid #f0a020; color:#6c4500; }
+    .danger { border-left:5px solid var(--danger); color:#741b16; }
+    .steps { counter-reset:step; list-style:none; padding:0; }
+    .steps li { position:relative; margin:13px 0; padding:13px 16px 13px 54px; border:1px solid var(--line); border-radius:12px; }
+    .steps li::before { counter-increment:step; content:counter(step); position:absolute; left:15px; top:13px; width:27px; height:27px; border-radius:50%; display:grid; place-items:center; color:#fff; background:var(--blue); font-weight:700; }
+    code { background:#eef3fb; border-radius:5px; padding:2px 6px; font-family:Consolas,monospace; }
+    table { width:100%; border-collapse:collapse; margin:12px 0; }
+    th,td { text-align:left; vertical-align:top; border:1px solid var(--line); padding:9px 11px; }
+    th { background:var(--soft); }
+    .tag { display:inline-block; padding:1px 8px; border-radius:99px; color:#fff; background:var(--blue); font-size:13px; font-weight:700; }
+    kbd { border:1px solid #bac3d2; border-bottom-width:2px; border-radius:5px; padding:1px 6px; background:#fff; font-family:Consolas,monospace; }
+    ul { padding-left:22px; }
+    footer { margin-top:38px; color:var(--muted); font-size:14px; }
+    @media print { body{background:#fff}.card{break-inside:avoid}main{box-shadow:none;border:0;margin:0;width:auto;padding:12mm} }
+  </style>
+</head>
+<body>
+<main>
+  <h1>上财选课执行器 V1</h1>
+  <p class="lead">Windows 小白使用说明。你不需要看代码，也不需要输入 pnpm 命令。</p>
+
+  <div class="card safe"><strong>日常安全状态：</strong>课程配置中的提交开关始终保持关闭。只读检查不会提交；实战启动器临时开启提交，并要求两次明确确认。</div>
+
+  <h2>第一次使用</h2>
+  <ol class="steps">
+    <li>把整个压缩包解压到一个固定文件夹。不要直接在压缩包预览窗口里运行。</li>
+    <li>双击 <strong>1_首次环境检查.cmd</strong>。全部通过后继续；出现失败时按窗口里的提示处理。</li>
+    <li>双击 <strong>2_填写课程.cmd</strong>，粘贴当前选课主页网址，选择 Chrome 或 Edge，并填写目标课程。</li>
+    <li>双击 <strong>3_只读检查.cmd</strong>，在打开的浏览器中正常登录学校系统。</li>
+    <li>确认课程、lessonId、人数、已选状态和冲突都符合预期。</li>
+    <li>需要真实执行时，双击 <strong>4_实战运行.cmd</strong>，核对课程清单后输入 <kbd>RUN</kbd>。</li>
+    <li>浏览器登录和预检查完成后，终端会要求输入 <kbd>ARM</kbd>。输入后才进入真实运行。</li>
+    <li>运行结束后双击 <strong>5_查看最近结果.cmd</strong>。</li>
+  </ol>
+
+  <h2>配置课程</h2>
+  <p>最准确的填写方式是课程名称加 <code>lessonId</code>。如果不知道 lessonId，可以填写教学班号，或者填写课程代码、教师和时间。</p>
+  <table>
+    <thead><tr><th>字段</th><th>怎么填</th></tr></thead>
+    <tbody>
+      <tr><td>选课主页网址</td><td>从浏览器地址栏复制。向导只保留域名、页面路径和 <code>electionProfile.id</code>，自动丢弃 ticket、code、token 等参数。</td></tr>
+      <tr><td>lessonId</td><td>教学班的内部 ID，最准确。已知时优先填写。</td></tr>
+      <tr><td>课程序号/教学班号</td><td>例如 0001。没有 lessonId 时可使用。</td></tr>
+      <tr><td>课程代码、教师、时间</td><td>用于没有 lessonId 和教学班号时匹配，并减少同名课程歧义。</td></tr>
+      <tr><td>priority</td><td>数字越小越优先。不同课程仍独立推进；没有先后要求时可以全部填 1。</td></tr>
+      <tr><td>最多尝试次数</td><td>第一次实战建议填 1。后续即使增加，也会遵守至少 15 秒重试间隔并在每次提交后先验证最终状态。</td></tr>
+      <tr><td>最长等待小时数</td><td>提前运行时程序会等待页面真实开放；超过这个时长后自动停止未完成课程。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>只读检查与实战运行</h2>
+  <div class="card safe"><span class="tag">只读</span> <strong>3_只读检查</strong>：读取课程列表、人数、已选状态、页面开放状态和可识别冲突。检查后浏览器自动关闭属于正常现象。</div>
+  <div class="card danger"><span class="tag">实战</span> <strong>4_实战运行</strong>：可能点击学校页面中的正常“选课”操作。启动前会显示全部目标，要求输入 RUN；到达 READY 后还需输入 ARM。</div>
+  <p>如果选课尚未开放，输入 ARM 后课程通常保持 <code>PENDING</code>。程序等待页面真实开放和操作入口出现，不会因为本地时间到了就盲目提交。浏览器、终端、网络和电脑需要保持运行，电脑不能进入睡眠。</p>
+
+  <h2>运行中的命令</h2>
+  <table>
+    <thead><tr><th>命令</th><th>作用</th></tr></thead>
+    <tbody>
+      <tr><td><code>status</code></td><td>显示每门课程当前状态。</td></tr>
+      <tr><td><code>pause</code></td><td>暂停新的观察和提交；已经开始的页面事务会先完成验证。</td></tr>
+      <tr><td><code>resume</code></td><td>从暂停状态恢复。</td></tr>
+      <tr><td><code>stop</code></td><td>停止全部尚未完成的课程。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>结果状态怎么理解</h2>
+  <table>
+    <thead><tr><th>状态</th><th>含义</th></tr></thead>
+    <tbody>
+      <tr><td><code>SUCCESS</code></td><td>Verifier 已从系统最终已选状态确认成功；该课程永久停止提交。</td></tr>
+      <tr><td><code>PENDING</code></td><td>正在等待开放、页面按钮或名义余量。</td></tr>
+      <tr><td><code>AVAILABLE</code></td><td>页面状态和人数允许进入一次尝试。</td></tr>
+      <tr><td><code>SUBMITTING</code></td><td>正在执行正常页面选课操作。</td></tr>
+      <tr><td><code>VERIFYING</code></td><td>正在读取最终已选状态。HTTP 200 本身不算成功。</td></tr>
+      <tr><td><code>RETRY_WAIT</code></td><td>已确认尚未成功，正在等待下一次受控尝试。</td></tr>
+      <tr><td><code>CONFLICT</code></td><td>发现时间冲突或重复课程，停止该课程。</td></tr>
+      <tr><td><code>NOT_ELIGIBLE</code></td><td>后端或页面明确表示没有资格，停止该课程。</td></tr>
+      <tr><td><code>FULL</code></td><td>明确满额并达到当前停止条件。</td></tr>
+      <tr><td><code>UNKNOWN</code></td><td>结果暂时无法确认；程序先重复验证，不会因超时立即重提。</td></tr>
+      <tr><td><code>FAILED</code></td><td>达到尝试/验证上限或发生不能自动恢复的错误，需要人工查看系统。</td></tr>
+      <tr><td><code>STOPPED</code></td><td>用户停止或达到整次运行时限。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>常见情况</h2>
+  <h3>检查完成后浏览器自动关闭</h3>
+  <p>正常。程序在 inspect 完成、实战完成、停止或发生致命错误后关闭自己创建的浏览器上下文。</p>
+  <h3>删除课程后仍然出现在检查里</h3>
+  <p>重新运行“2_填写课程”并选择重写课程列表。程序每次读取当前交付包中 <code>config\courses.json</code>，不会从旧日志恢复目标。</p>
+  <h3>已经选中的课程还在配置中</h3>
+  <p>程序会识别为已选并直接进入 SUCCESS，不再提交。</p>
+  <h3>显示人数未满，但没有选上</h3>
+  <p>人数只代表名义余量。资格、冲突、轮次规则和最终结果仍由学校后端决定。</p>
+  <h3>登录失效</h3>
+  <p>程序会暂停新的提交并等待正常登录恢复。不要把账号、密码或验证码写入配置。</p>
+  <h3>需要换另一个账号使用</h3>
+  <p>关闭程序打开的浏览器和运行窗口，然后双击“7_换人使用_清除登录状态.cmd”。它只清除本工具保存的浏览器资料。</p>
+  <h3>需要协助排错</h3>
+  <p>双击“8_导出诊断包.cmd”。诊断包排除课程配置和浏览器资料，但课程名称、lessonId、运行时间和状态仍可能出现，分享前请查看。</p>
+
+  <h2>隐私与文件</h2>
+  <ul>
+    <li><code>config\courses.json</code>：本机课程配置，不随空白交付包提供。</li>
+    <li><code>.runtime\browser-profile</code>：本工具保存的登录环境，不能发给别人。</li>
+    <li><code>logs</code>：运行日志，不包含程序主动记录的 Cookie、Session、Authorization 或响应正文。</li>
+    <li><code>diagnostics</code>：主动导出的脱敏诊断包。</li>
+  </ul>
+  <div class="card warning">不要把整个使用过的程序文件夹直接发给别人。重新分发时使用原始空白交付压缩包。</div>
+
+  <footer>交付层版本 1.0.1 · 核心执行基线 v1.0.0 · 支持 Windows 10/11 与 Chrome/Edge</footer>
+</main>
+</body>
+</html>
