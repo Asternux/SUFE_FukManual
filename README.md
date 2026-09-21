@@ -1,4 +1,4 @@
-# SUFE Course Selection Executor
+# SUFE Course Selection Executor (dev)
 
 A local course-selection workflow automation project for Shanghai University of Finance and Economics (SUFE) EAMS, built with TypeScript and Playwright.
 
