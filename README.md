@@ -1,20 +1,20 @@
-# SUFE 课程选择执行器
+# SUFE Course Selection Executor
 
-基于 TypeScript 与 Playwright 的上海财经大学 EAMS 本地选课流程自动化项目。
+A local course-selection workflow automation project for Shanghai University of Finance and Economics (SUFE) EAMS, built with TypeScript and Playwright.
 
-> **说明**：程序沿学校网页的正常操作链工作，重点保证流程可靠、状态判断正确、容易排查问题。项目不包含学校账号、密码、Cookie、Session、Token、学号、姓名或任何登录缓存。
+> **Note:** The program follows the normal interaction flow of the university website. It focuses on reliable workflow execution, correct state verification, and easy troubleshooting. The project does not include or provide any school account, password, Cookie, Session, Token, CAPTCHA, authentication, access-control, eligibility, or rate-limit bypass functionality.
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 📥 下载与安装
+### 📥 Download and install
 
-**Windows 用户（推荐）**：
+**Windows users (recommended):**
 
-- 从 [Releases](https://github.com/Asternux/SUFE_FukManual/releases/latest) 下载 `SUFE-Course-Executor-v1.0.2-Windows-x64-portable.zip`；
-- 完整解压到固定文件夹，便携包自带 Node.js 运行时；
-- 电脑仍需安装 Google Chrome 或 Microsoft Edge。
+- Download `SUFE-Course-Executor-v1.0.2-Windows-x64-portable.zip` from [Releases](https://github.com/Asternux/SUFE_FukManual/releases/latest).
+- Extract the archive completely to a fixed folder. The portable package includes a Node.js runtime.
+- Google Chrome or Microsoft Edge must still be installed on the computer.
 
-**源码用户**（需要 Node.js 20+）：
+**From source** (requires Node.js 20+):
 
 ```powershell
 pnpm install --frozen-lockfile
@@ -22,104 +22,104 @@ pnpm build
 Copy-Item config/courses.example.json config/courses.json
 ```
 
-### 📖 使用步骤（Windows 小白版）
+### 📖 Usage steps for Windows beginners
 
-| 步骤 | 操作 | 说明 |
-|------|------|------|
-| 1 | 完整解压 ZIP 到固定文件夹 | 不要放在临时文件夹 |
-| 2 | 双击 `0_打开使用说明.cmd` | 阅读离线使用说明 |
-| 3 | 双击 `1_首次环境检查.cmd` | 验证系统环境 |
-| 4 | 双击 `2_填写课程.cmd` | 配置目标课程 |
-| 5 | 双击 `3_只读检查.cmd` | 验证配置，不产生提交 |
-| 6 | 双击 `4_实战运行.cmd` | 执行真实选课 |
-| 7 | 双击 `5_查看最近结果.cmd` | 查看运行结果 |
+| Step | Action | Description |
+|------|--------|-------------|
+| 1 | Extract the ZIP completely to a fixed folder | Do not place it in a temporary folder |
+| 2 | Double-click `0_打开使用说明.cmd` | Read the offline usage instructions |
+| 3 | Double-click `1_首次环境检查.cmd` | Verify the system environment |
+| 4 | Double-click `2_填写课程.cmd` | Configure target courses |
+| 5 | Double-click `3_只读检查.cmd` | Validate the configuration without submitting |
+| 6 | Double-click `4_实战运行.cmd` | Perform the actual course-selection operation |
+| 7 | Double-click `5_查看最近结果.cmd` | View the latest results |
 
-**关键点**：
+**Important:**
 
-- `3_只读检查` 只读取页面状态，不会提交；
-- `4_实战运行` 可能产生真实选课操作；
-- 日常配置默认 `submission.enabled=false`；
-- 实战入口只生成一次性启用配置，并在结束时清理；
-- 实战确认要求先输入 `RUN`，到达 `READY` 后再输入精确的大写 `ARM`，确认区分大小写。
+- `3_只读检查` only reads page state and does not submit anything.
+- `4_实战运行` may perform real course-selection operations.
+- The daily configuration defaults to `submission.enabled=false`.
+- The practical-run entry point creates a one-time enabled configuration and removes it when finished.
+- Practical-run confirmation first requires `RUN`; after `READY` is reached, enter the exact uppercase phrase `ARM`. Confirmation is case-sensitive.
 
-## ✨ 主要功能
+## ✨ Features
 
-- 通过 JSON 或交互式向导一次配置多个目标教学班；
-- 支持 Chrome 或 Microsoft Edge，由用户完成正常网页登录；
-- 自动解析教学班并阻断多候选歧义；
-- 多课程独立 Worker 并行推进，同一教学班始终只有一个在途提交；
-- 分离提交与 Verifier，只有最终已选状态明确时才判定成功；
-- 网络异常或未知结果先验证，再按策略进行有界重试；
-- 登录失效时暂停新的提交，恢复登录后继续读取状态；
-- 每门课独立日志、整次运行总结、环境检查和脱敏诊断导出。
+- Configure multiple target classes through JSON or an interactive wizard.
+- Support Chrome and Microsoft Edge, with the user completing the normal web login.
+- Automatically resolve classes and stop when multiple candidates create ambiguity.
+- Run independent workers for different courses while ensuring that each class has at most one in-flight submission.
+- Separate submission from verification; success is reported only when the final selected state is unambiguous.
+- Verify after network errors or unknown results, then perform bounded retries according to policy.
+- Pause new submissions when login expires and resume state reading after login is restored.
+- Provide per-course logs, run summaries, environment checks, and redacted diagnostic exports.
 
-## 🔧 配置说明
+## 🔧 Configuration
 
-`entryUrl` 必须是当前轮次的完整选课入口，并包含实际的 `electionProfile.id`。目标匹配顺序为：
+`entryUrl` must be the complete course-selection entry URL for the current round and must contain the actual `electionProfile.id`. Target matching is performed in this order:
 
-1. `lessonId`；
-2. `lessonNo`（教学班号/课程序号）；
-3. `courseCode + teacher`；
-4. `name + teacher + time`。
+1. `lessonId`
+2. `lessonNo` (class number/course sequence number)
+3. `courseCode + teacher`
+4. `name + teacher + time`
 
-如果匹配到多个教学班，程序会列出候选并停止，要求先消除歧义。
+If multiple classes match, the program lists the candidates and stops until the ambiguity is resolved.
 
-`priority` 是调度优先级，数字越小越优先。它不是“必须等上一门完成才开始下一门”的顺序；不同课程由独立 Worker 推进，没有先后要求时可以全部填 `1`。
+`priority` controls scheduling priority: smaller numbers have higher priority. It does not mean that one course must finish before another starts. Different courses are handled by independent workers and can proceed in parallel when no ordering is required.
 
-建议首次真实运行将 `retry.maxAttempts` 设为 `1`。程序强制最小重试间隔至少 15 秒，并在每次提交后先验证最终状态。
+For the first real run, setting `retry.maxAttempts` to `1` is recommended. The program enforces a minimum retry interval of 15 seconds and verifies the final state after every submission.
 
-## 📋 运行模式
+## 📋 Operation modes
 
-### Inspect（只读验证）
+### Inspect (read-only verification)
 
 ```powershell
 pnpm start -- --config config/courses.json --mode inspect
 ```
 
-Inspect 会打开浏览器并等待正常登录，然后检查教学班匹配、人数、已选状态、时间冲突和页面操作状态。输出 `READY` 后结束并自动关闭程序创建的浏览器；此模式不会提交。
+Inspect opens the browser and waits for a normal login. It then checks class matching, enrollment capacity, selected status, time conflicts, and page operation status. After outputting `READY`, it exits and automatically closes the browser created by the program.
 
-### Run（真实运行）
+### Run (real operation)
 
 ```powershell
 pnpm start -- --config config/courses.json --mode run
 ```
 
-真实运行要求本地配置中的 `submission.enabled=true`。若 `requireArmPhrase=true`，终端还必须输入精确的大写 `ARM`。运行中支持 `status`、`pause`、`resume` 和 `stop`。
+Real operation requires `submission.enabled=true` in the local configuration. When `requireArmPhrase=true`, the terminal also requires the exact uppercase phrase `ARM`. During execution, `status`, `pause`, `resume`, and `stop` commands are supported.
 
-如果选课尚未开放，Worker 通常保持 `PENDING` 并等待页面真实开放；达到 `scheduler.maxRunDurationMs` 后，未完成课程会停止。浏览器、终端、网络和电脑需要保持运行。
+If course selection has not opened, workers normally remain in `PENDING` and wait for the page to become available. Courses that are not completed when `scheduler.maxRunDurationMs` is reached are stopped. The browser, terminal, network, and computer must remain available during execution.
 
-## 🖥️ 系统要求
+## 🖥️ System requirements
 
-| 平台 | 状态 | 说明 |
-|------|------|------|
-| Windows 10/11 x64 | 正式支持 | 提供已完成实机和独立解压验证的交付包 |
-| macOS/Linux | 源码测试中 | Windows `.cmd` 交付层不可直接使用 |
+| Platform | Status | Description |
+|----------|--------|-------------|
+| Windows 10/11 x64 | Officially supported | Tested on physical machines and with the independently extracted delivery package |
+| macOS/Linux | Source testing | The Windows `.cmd` delivery layer cannot be used directly |
 
-源码环境需要 Node.js 20+、pnpm 11（v1.0.2 使用 pnpm 11.19.0 构建）以及 Chrome 或 Edge。源码模式使用系统浏览器，通常不需要执行 `playwright install`；`browser.channel` 只支持 `chrome` 或 `msedge`。
+The source environment requires Node.js 20+, pnpm 11 (v1.0.2 was built with pnpm 11.19.0), and Chrome or Edge. Source mode uses the system browser and normally does not require `playwright install`; configure `browser.channel` according to the browser installed locally.
 
-## 🔒 安全设计
+## 🔒 Security design
 
-| 原则 | 说明 |
-|------|------|
-| 验证不信任 | HTTP 200、按钮点击、弹窗出现或请求完成都不等于成功 |
-| 最终确认 | Verifier 重新读取系统最终已选状态 |
-| 限流遵守 | 重试次数和等待时间有上下限，服从服务器 `Retry-After` |
-| 单一流程 | 每个教学班同时只有一个在途提交 |
-| 无绕过 | 不提供验证码、认证、访问控制或资格校验绕过功能 |
-| 不滥用 | 不提供高频人数请求、极限频率或请求洪泛功能 |
+| Principle | Description |
+|-----------|-------------|
+| Do not trust a single signal | HTTP 200, a button click, a popup, or a completed request does not equal success |
+| Final verification | The Verifier rereads the system's final selected state |
+| Respect rate limits | Retry counts and wait times are bounded, and the server's `Retry-After` is honored |
+| Single workflow | Only one submission for a given class may be in flight at a time |
+| No bypasses | No CAPTCHA, authentication, access-control, or eligibility-check bypass is provided |
+| No abuse | No high-frequency enrollment-count polling, extreme request rates, or request flooding is provided |
 
-日志保存在本地 `logs/`。不要公开 `logs/`、`config/courses.json`、`.runtime/`、浏览器目录或网页保存文件。
+Logs are stored locally in `logs/`. Do not publish `logs/`, `config/courses.json`, `.runtime/`, browser profiles, or saved webpage files.
 
-## 📚 文档
+## 📚 Documentation
 
-- [系统与程序结构](docs/ARCHITECTURE.md)
-- [验证范围与已知限制](docs/VALIDATION.md)
-- [v1.0.2 发布说明](docs/RELEASE.md)
-- [Windows 交付层维护说明](delivery/维护者说明.md)
+- [System and program architecture](docs/ARCHITECTURE.md)
+- [Validation scope and known limitations](docs/VALIDATION.md)
+- [v1.0.2 release notes](docs/RELEASE.md)
+- [Windows delivery-layer maintenance notes](delivery/维护者说明.md)
 
-## ⚖️ 使用条款
+## ⚖️ Terms of use
 
-本项目仅供学习和个人自动化研究使用。请遵守学校选课规则、网络服务条款和当地法律法规。项目不承诺获得课程名额，也不鼓励高频请求、无限并发或规避系统限制。
+This project is intended only for learning and personal automation research. Follow the university's course-selection rules, network-service terms, and applicable laws and regulations. The project does not guarantee a place in any course and does not encourage high-frequency requests, unlimited retries, or interference with the normal operation of the university service.
 
 ## 📄 License
 
@@ -127,4 +127,4 @@ pnpm start -- --config config/courses.json --mode run
 
 ---
 
-**最后更新**：v1.0.2 · **报告问题**：[Issues](https://github.com/Asternux/SUFE_FukManual/issues)
+**Last updated:** v1.0.2 · **Report an issue:** [Issues](https://github.com/Asternux/SUFE_FukManual/issues)
