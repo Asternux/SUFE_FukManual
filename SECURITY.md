@@ -1,7 +1,13 @@
 # Security and privacy
 
-请不要在公开 Issue 中提交密码、验证码、完整 Cookie、Session ID、Authorization、Token、Ticket、学号、姓名、手机号、浏览器登录目录、真实课程配置或未检查的完整日志。
+Please do not post any of the following in public issues, discussions, pull requests, or other public channels:
 
-如果问题需要日志，先使用发行包中的 `8_导出诊断包.cmd`，并在分享前再次检查课程名称、lessonId、运行时间和状态。发现可能泄露身份或凭据的内容时，请先撤销或失效相关凭据，再通过 GitHub 的私密安全报告功能联系维护者。
+- Passwords, verification codes, complete Cookies, Session IDs, Authorization headers, Tokens, or Tickets;
+- Student IDs, names, phone numbers, browser login directories, real course configurations, or unredacted diagnostic logs;
+- Any other information that could identify an account, reveal credentials, or expose private enrollment data.
 
-项目不会主动记录请求 Headers、Cookie、Token 或网络响应正文。任何绕过身份认证、验证码、访问控制、资格判断或限流的请求都不属于本项目范围。
+If logs are needed to investigate a problem, first use `8_导出诊断包.cmd` from the release package. Before sharing the exported package, inspect it again and check course names, `lessonId`, run times, status values, account-related information, and any other potentially sensitive content. Redact or remove anything that could expose an identity or credential.
+
+The project does not intentionally record request headers, Cookies, Tokens, or network response bodies. Any request to bypass authentication, CAPTCHA, access controls, eligibility checks, or rate limits is outside the scope of this project and will not be supported.
+
+For private vulnerability reports, please use GitHub's private security reporting features when available instead of opening a public issue. If private reporting is unavailable, contact the repository maintainer before disclosing sensitive details publicly.
